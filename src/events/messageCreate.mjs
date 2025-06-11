@@ -35,7 +35,7 @@ export default async function (message) {
             authorId: message?.author?.id ?? null,
             authorUsername: message?.author?.username ?? null,
             authorNickname: message?.member?.nickname ?? message?.author?.username ?? null,
-            timestamp: message?.createdTimestamp ?? null,
+            timestamp: message?.createdTimestamp ? new Date(message.createdTimestamp).toISOString() : null,
             content: message?.cleanContent ?? message?.content ?? null,
             mentionsMe,
             isReplyToMe,
@@ -46,7 +46,7 @@ export default async function (message) {
             authorId: m?.author?.id ?? null,
             authorUsername: m?.author?.username ?? null,
             authorNickname: m?.member?.nickname ?? m?.author?.username ?? null,
-            timestamp: m?.createdTimestamp ?? null,
+            timestamp: m?.createdTimestamp ? new Date(m.createdTimestamp).toISOString() : null,
             content: m?.cleanContent ?? m?.content ?? null
         })) : []);
         const authorRoles = (message?.member?.roles?.cache)
