@@ -1,5 +1,5 @@
 [Unit]
-Description=discord-app
+Description=discord-app %i
 After=network-online.target
 Wants=network-online.target
 StartLimitBurst=3
@@ -11,8 +11,9 @@ Group=root
 RestartSec=5
 Restart=on-failure
 WorkingDirectory=/opt/discord-app
-ExecStart=/opt/discord-app/discord-app.mjs
+Environment=DISCORD_CLIENT_ID=%i
 EnvironmentFile=/opt/discord-app/.env
+ExecStart=/opt/discord-app/discord-app.mjs %i
 
 [Install]
 WantedBy=multi-user.target
