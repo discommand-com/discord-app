@@ -10,10 +10,10 @@ User=root
 Group=root
 RestartSec=5
 Restart=on-failure
-WorkingDirectory=/opt/discord-app
 Environment=DISCORD_CLIENT_ID=%i
-EnvironmentFile=/opt/discord-app/.env
-ExecStart=/opt/discord-app/discord-app.mjs %i
+WorkingDirectory=/opt/discommand/discord-app
+EnvironmentFile=/opt/discommand/discord-app/.env
+ExecStart=/opt/discommand/discord-app/discord-app.mjs %i
 
 [Install]
 WantedBy=multi-user.target
