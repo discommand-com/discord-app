@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord.js';
 import log from './log.mjs';
+import { getAppToken } from './db.mjs';
 
 /**
  * Purges all global and (optionally) guild-specific application commands.
@@ -23,7 +24,7 @@ export async function purgeCommands({
     logger = log
 }) {
     if (!token || !clientId) {
-        logger.error('DISCORD_TOKEN and DISCORD_CLIENT_ID must be set in your environment.');
+        logger.error('Token and clientId must be provided.');
         throw new Error('Missing credentials');
     }
     const rest = new restClass({ version: '10' }).setToken(token);
@@ -38,10 +39,23 @@ export async function purgeCommands({
 
 // CLI usage
 if (import.meta.url === process.argv[1] || import.meta.url === `file://${process.argv[1]}`) {
-    const token = process.env.DISCORD_TOKEN;
-    const clientId = process.env.DISCORD_CLIENT_ID;
-    const guildId = process.env.PURGE_GUILD_ID || null;
-    purgeCommands({ token, clientId, guildId }).catch(err => {
-        process.exit(1);
-    });
+    (async () => {
+        let clientId = process.env.DISCORD_CLIENT_ID || process.argv[2];
+        if (!clientId) {
+            log.error('DISCORD_CLIENT_ID env variable or first CLI argument must be set.');
+            process.exit(1);
+        }
+        const token = await getAppToken(clientId);
+        if (!token) {
+            log.error(`No token found in database for app id: ${clientId}`);
+            process.exit(1);
+        }
+        const guildId = process.env.PURGE_GUILD_ID || null;
+        try {
+            await purgeCommands({ token, clientId, guildId });
+        } catch (err) {
+            log.error(err);
+            process.exit(1);
+        }
+    })();
 }
