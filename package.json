@@ -1,11 +1,11 @@
 {
-    "name": "skeleton",
+    "name": "discord-app",
     "version": "1.0.0",
     "type": "module",
     "description": "a Discord.js template supporting locales with dynamic events and /commands",
-    "main": "skeleton.js",
+    "main": "discord-app.js",
     "scripts": {
-        "start": "node skeleton.js",
+        "start": "node discord-app.js",
         "test": "npx --node-options=\"--experimental-vm-modules --no-warnings\" jest --detectOpenHandles --silent",
         "commands:purge": "node ./src/purge-commands.mjs"
     },
@@ -14,7 +14,7 @@
         "discord.js",
         "bot",
         "template",
-        "skeleton",
+        "discord-app",
         "locales",
         "events",
         "commands"
@@ -22,10 +22,10 @@
     "author": "Russell Purinton <russell.purinton@gmail.com>",
     "repository": {
         "type": "git",
-        "url": "https://github.com/rpurinton/skeleton.git"
+        "url": "https://github.com/rpurinton/discord-app.git"
     },
     "bugs": {
-        "url": "https://github.com/rpurinton/skeleton/issues"
+        "url": "https://github.com/rpurinton/discord-app/issues"
     },
     "license": "MIT",
     "dependencies": {

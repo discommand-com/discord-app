@@ -1,5 +1,5 @@
 [Unit]
-Description=skeleton
+Description=discord-app
 After=network-online.target
 Wants=network-online.target
 StartLimitBurst=3
@@ -10,9 +10,9 @@ User=root
 Group=root
 RestartSec=5
 Restart=on-failure
-WorkingDirectory=/opt/skeleton
-ExecStart=/opt/skeleton/skeleton.mjs
-EnvironmentFile=/opt/skeleton/.env
+WorkingDirectory=/opt/discord-app
+ExecStart=/opt/discord-app/discord-app.mjs
+EnvironmentFile=/opt/discord-app/.env
 
 [Install]
 WantedBy=multi-user.target

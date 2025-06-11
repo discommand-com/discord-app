@@ -1,4 +1,4 @@
-# skeleton
+# discord-app
 
 A modern Discord.js app template supporting locales, events, and slash commands.
 
@@ -19,7 +19,7 @@ A modern Discord.js app template supporting locales, events, and slash commands.
 
 ### 1. Fork this repository
 
-It's recommended to [fork](https://github.com/rpurinton/skeleton/fork) this repo to your own GitHub account before making changes. This allows you to pull upstream updates easily.
+It's recommended to [fork](https://github.com/rpurinton/discord-app/fork) this repo to your own GitHub account before making changes. This allows you to pull upstream updates easily.
 
 ### 2. Clone your fork
 
@@ -31,8 +31,8 @@ cd <your-repo>
 
 ### 3. Rename for your project
 
-- Rename `skeleton.mjs` to your app's main file name (e.g., `myapp.mjs`).
-- Rename `skeleton.service` to match your app (e.g., `myapp.service`).
+- Rename `discord-app.mjs` to your app's main file name (e.g., `myapp.mjs`).
+- Rename `discord-app.service` to match your app (e.g., `myapp.service`).
 - Update `package.json` with your own project name, description, author, and repository info.
 
 ### 4. Install dependencies
@@ -60,7 +60,7 @@ LOG_LEVEL=info
 ### 6. Run the app
 
 ```sh
-node skeleton.mjs
+node discord-app.mjs
 # or, if renamed:
 node myapp.mjs
 ```
@@ -128,15 +128,15 @@ export default (message) => {
 
 ## Systemd Service Setup
 
-To run your app as a service on Linux, use the provided `skeleton.service` file.
+To run your app as a service on Linux, use the provided `discord-app.service` file.
 
 **Update the paths and names to match your project.**
 
-Example `skeleton.service`:
+Example `discord-app.service`:
 
 ```ini
 [Unit]
-Description=skeleton
+Description=discord-app
 After=network-online.target
 Wants=network-online.target
 StartLimitBurst=3
@@ -147,9 +147,9 @@ User=appuser
 Group=appgroup
 RestartSec=5
 Restart=on-failure
-WorkingDirectory=/opt/skeleton
-ExecStart=/usr/bin/node /opt/skeleton/skeleton.mjs
-EnvironmentFile=/opt/skeleton/.env
+WorkingDirectory=/opt/discord-app
+ExecStart=/usr/bin/node /opt/discord-app/discord-app.mjs
+EnvironmentFile=/opt/discord-app/.env
 
 [Install]
 WantedBy=multi-user.target
@@ -160,7 +160,7 @@ WantedBy=multi-user.target
 1. Copy and rename the service file:
 
    ```sh
-   sudo cp skeleton.service /etc/systemd/system/myapp.service
+   sudo cp discord-app.service /etc/systemd/system/myapp.service
    ```
 
 2. Edit the service file:
