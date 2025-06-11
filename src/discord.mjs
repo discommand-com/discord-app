@@ -3,6 +3,7 @@ import log from './log.mjs';
 import setupEvents from './events.mjs';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { getAppToken } from './db.mjs';
+import { consume } from './rabbitmq.mjs';
 
 /**
  * Creates and logs in a Discord client, allowing dependency injection for testability.
@@ -52,5 +53,10 @@ export const createAndLoginDiscordClient = async ({
         logger.error('Failed to login:', error);
         throw error;
     }
+    // Start consuming from 'discord_<client_id>' queue (transient, exclusive)
+    const queueName = `discord_${appId}`;
+    consume(queueName, async (msg) => {
+        logger.info(`Received message from queue '${queueName}':`, msg);
+    }, { durable: false, exclusive: true });
     return client;
 };
