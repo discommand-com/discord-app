@@ -13,23 +13,32 @@ if (!MQ_URL) {
 let connection;
 let channel;
 
-async function connect() {
+// Allow injection of amqplib and log for testability
+export async function _resetRabbitMQTestState() {
+    if (connection) {
+        try { await connection.close(); } catch {}
+        connection = undefined;
+        channel = undefined;
+    }
+}
+
+async function connect({ amqplibLib = amqplib } = {}) {
     if (!connection) {
-        connection = await amqplib.connect(MQ_URL);
+        connection = await amqplibLib.connect(MQ_URL);
         channel = await connection.createChannel();
     }
     return channel;
 }
 
-export async function publish(queue, message, options = {}) {
-    const ch = await connect();
+export async function publish(queue, message, options = {}, { amqplibLib = amqplib, logger = log } = {}) {
+    const ch = await connect({ amqplibLib });
     await ch.assertQueue(queue, { durable: true, exclusive: false, ...options });
     ch.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
-    log.debug(`Published message to queue '${queue}'`, { message });
+    logger.debug(`Published message to queue '${queue}'`, { message });
 }
 
-export async function consume(queue, onMessage, options = {}) {
-    const ch = await connect();
+export async function consume(queue, onMessage, options = {}, { amqplibLib = amqplib, logger = log } = {}) {
+    const ch = await connect({ amqplibLib });
     await ch.assertQueue(queue, { durable: false, exclusive: true, ...options });
     ch.consume(queue, async (msg) => {
         if (msg !== null) {
@@ -43,7 +52,7 @@ export async function consume(queue, onMessage, options = {}) {
             ch.ack(msg);
         }
     });
-    log.debug(`Consuming queue '${queue}'`);
+    logger.debug(`Consuming queue '${queue}'`);
 }
 
-export default { publish, consume };
+export default { publish, consume, _resetRabbitMQTestState };
