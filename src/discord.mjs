@@ -24,7 +24,7 @@ export const createAndLoginDiscordClient = async ({
     GatewayIntentBitsObj = GatewayIntentBits,
     partials = ['MESSAGE', 'CHANNEL', 'REACTION'],
     clientOptions = {},
-    getAppTokenFn = getAppToken // allow injection for testability
+    getAppTokenFn = getAppToken
 } = {}) => {
     let appId = process.env.DISCORD_CLIENT_ID;
     if (!appId) {
@@ -53,7 +53,6 @@ export const createAndLoginDiscordClient = async ({
         logger.error('Failed to login:', error);
         throw error;
     }
-    // Start consuming from 'discord_<client_id>' queue (transient, exclusive)
     const queueName = `discord_${appId}`;
     consume(queueName, async (msg) => {
         logger.info(`Received message from queue '${queueName}':`, msg);
