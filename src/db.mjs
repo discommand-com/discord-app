@@ -23,3 +23,13 @@ try {
 }
 
 export default db;
+
+export async function getAppToken(appId) {
+    const [rows] = await db.query('SELECT token FROM apps WHERE id = ?', [appId]);
+    return rows.length ? rows[0].token : null;
+}
+
+export async function getAppPresence(appId) {
+    const [rows] = await db.query('SELECT presence FROM apps WHERE id = ?', [appId]);
+    return rows.length ? rows[0].presence : null;
+}
