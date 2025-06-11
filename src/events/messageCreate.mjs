@@ -36,7 +36,10 @@ export default async function (message) {
             authorUsername: message?.author?.username ?? null,
             authorNickname: message?.member?.nickname ?? message?.author?.username ?? null,
             timestamp: message?.createdTimestamp ?? null,
-            content: message?.cleanContent ?? null
+            content: message?.cleanContent ?? message?.content ?? null,
+            mentionsMe,
+            isReplyToMe,
+            mentionsMyRole
         };
         const history = (historyMessages.map ? historyMessages.map(m => ({
             messageId: m?.id ?? null,
@@ -44,12 +47,13 @@ export default async function (message) {
             authorUsername: m?.author?.username ?? null,
             authorNickname: m?.member?.nickname ?? m?.author?.username ?? null,
             timestamp: m?.createdTimestamp ?? null,
-            content: m?.cleanContent ?? null
+            content: m?.cleanContent ?? m?.content ?? null
         })) : []);
         const authorRoles = (message?.member?.roles?.cache)
             ? Array.from(message.member.roles.cache.values()).map(role => role?.id ?? null)
             : [];
         await publish('inbox', {
+            myId,
             rsvp: `discord_${myId}`,
             messageId: message?.id ?? null,
             guildId: message?.guild?.id ?? null,
