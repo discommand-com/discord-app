@@ -8,10 +8,10 @@ import log from './log.mjs';
  */
 export const registerExceptionHandlers = (processObj = process, logger = log) => {
     const handlers = {
-        uncaughtException: (err) => logger.error('Uncaught Exception:', { err }),
-        unhandledRejection: (reason, promise) => logger.error('Unhandled Rejection at:', { promise, reason }),
-        warning: (warning) => logger.warn('Warning:', { name: warning.name, message: warning.message }),
-        exit: (code) => logger.info(`Process exiting with code: ${code}`)
+        uncaughtException: (err) => logger.error('Uncaught Exception', { err }),
+        unhandledRejection: (reason, promise) => logger.error('Unhandled Rejection', { promise, reason }),
+        warning: (warning) => logger.warn('Warning', { warning }),
+        exit: (code) => logger.info(`Process exiting`, { code })
     };
     processObj.on('uncaughtException', handlers.uncaughtException);
     processObj.on('unhandledRejection', handlers.unhandledRejection);
