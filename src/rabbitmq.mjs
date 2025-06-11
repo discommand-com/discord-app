@@ -34,7 +34,7 @@ export async function publish(queue, message, options = {}, { amqplibLib = amqpl
     const ch = await connect({ amqplibLib });
     await ch.assertQueue(queue, { durable: true, exclusive: false, ...options });
     ch.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
-    logger.debug(`Published message to queue '${queue}'`, { message });
+    logger.debug(`Published message to queue '${queue}'`, { message: JSON.stringify(message) });
 }
 
 export async function consume(queue, onMessage, options = {}, { amqplibLib = amqplib, logger = log } = {}) {
