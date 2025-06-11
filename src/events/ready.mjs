@@ -1,5 +1,4 @@
 import log from '../log.mjs';
-import { getMsg } from '../locales.mjs';
 
 // Event handler for ready
 export default async function (client) {
