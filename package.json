@@ -1,6 +1,6 @@
 {
     "name": "discord-app",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "type": "module",
     "description": "a Discord.js template supporting locales with dynamic events and /commands",
     "main": "discord-app.js",
