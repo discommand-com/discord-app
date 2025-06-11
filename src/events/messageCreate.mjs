@@ -5,7 +5,7 @@ import { publish } from '../rabbitmq.mjs';
 export default async function (message) {
     log.debug('messageCreate', { message });
     try {
-        const myId = global.client.id;
+        const myId = global.client.user.id;
         log.debug('myId', { myId });
         if (message.author.id === myId) {
             log.debug('Message is from myself, skipping');
