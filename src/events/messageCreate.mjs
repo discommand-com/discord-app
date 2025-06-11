@@ -3,11 +3,13 @@ import { publish } from '../rabbitmq.mjs';
 
 // Event handler for messageCreate
 export default async function (message) {
-    log.debug('messageCreate', { 
-        id: message.id,
-        content: message.content,
-        author: message.author?.id,
-        timestamp: message.createdTimestamp
+    log.debug('messageCreate', {
+        message_id: message.id,
+        timestamp: message.createdTimestamp,
+        guild_id: message.guild?.id,
+        channel_id: message.channel.id,
+        author_id: message.author?.id,
+        content: message.cleanContent
     });
     try {
         const myId = global.client.user.id;
