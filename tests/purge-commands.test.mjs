@@ -63,6 +63,6 @@ describe('purgeCommands', () => {
             routes: mockRoutes,
             logger: mockLogger
         })).rejects.toThrow('Missing credentials');
-        expect(mockLogger.error).toHaveBeenCalledWith('DISCORD_TOKEN and DISCORD_CLIENT_ID must be set in your environment.');
+        expect(mockLogger.error).toHaveBeenCalledWith('Token and clientId must be provided.');
     });
 });
