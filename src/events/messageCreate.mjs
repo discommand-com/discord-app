@@ -52,7 +52,7 @@ export default async function (message) {
         const authorRoles = (message?.member?.roles?.cache)
             ? Array.from(message.member.roles.cache.values()).map(role => role?.id ?? null)
             : [];
-        await publish('inbox', {
+        await publish('inbox', 'direct', {
             myId,
             rsvp: `discord_${myId}`,
             messageId: message?.id ?? null,

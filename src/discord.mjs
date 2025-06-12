@@ -4,6 +4,7 @@ import setupEvents from './events.mjs';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { getAppToken } from './db.mjs';
 import { consume } from './rabbitmq.mjs';
+import { authPlugins } from 'mysql2';
 
 const MAX_LENGTH = 2000; // Discord's max message length
 
@@ -134,6 +135,6 @@ export const createAndLoginDiscordClient = async ({
         throw error;
     }
     const queueName = `discord_${appId}`;
-    consumeFn(queueName, (msg) => handleQueueMessage(client, logger, msg), { durable: false, exclusive: true });
+    consumeFn(queueName, 'direct', (msg) => handleQueueMessage(client, logger, msg), { durable: false, exclusive: true, autoDelete: true })
     return client;
 };
