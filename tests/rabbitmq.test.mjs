@@ -7,7 +7,9 @@ describe('rabbitmq.mjs', () => {
     beforeEach(() => {
         mockChannel = {
             assertQueue: jest.fn().mockResolvedValue({}),
-            sendToQueue: jest.fn(),
+            assertExchange: jest.fn().mockResolvedValue({}),
+            bindQueue: jest.fn().mockResolvedValue({}),
+            publish: jest.fn(),
             consume: jest.fn((queue, cb) => { mockChannel._consumeCb = cb; }),
             ack: jest.fn()
         };
@@ -29,17 +31,19 @@ describe('rabbitmq.mjs', () => {
         jest.clearAllMocks();
     });
 
-    it('publish calls assertQueue and sendToQueue with correct args', async () => {
-        await rabbitmq.publish('testq', { foo: 'bar' }, {}, { amqplibLib: mockAmqplib, logger: mockLogger });
-        expect(mockChannel.assertQueue).toHaveBeenCalledWith('testq', expect.objectContaining({ durable: true, exclusive: false }));
-        expect(mockChannel.sendToQueue).toHaveBeenCalledWith('testq', Buffer.from(JSON.stringify({ foo: 'bar' })));
+    it('publish calls assertExchange and publish with correct args', async () => {
+        await rabbitmq.publish('testq', 'direct', { foo: 'bar' }, {}, { amqplibLib: mockAmqplib, logger: mockLogger });
+        expect(mockChannel.assertExchange).toHaveBeenCalledWith('testq', 'direct', expect.any(Object));
+        expect(mockChannel.publish).toHaveBeenCalledWith('testq', 'testq', Buffer.from(JSON.stringify({ foo: 'bar' })));
         expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Published message'), expect.any(Object));
     });
 
-    it('consume calls assertQueue and sets up consumer, calls onMessage and ack', async () => {
+    it('consume calls assertExchange, assertQueue, bindQueue, sets up consumer, calls onMessage and ack', async () => {
         const onMessage = jest.fn();
-        await rabbitmq.consume('testq', onMessage, {}, { amqplibLib: mockAmqplib, logger: mockLogger });
-        expect(mockChannel.assertQueue).toHaveBeenCalledWith('testq', expect.objectContaining({ durable: false, exclusive: true }));
+        await rabbitmq.consume('testq', 'direct', onMessage, {}, { amqplibLib: mockAmqplib, logger: mockLogger });
+        expect(mockChannel.assertExchange).toHaveBeenCalledWith('testq', 'direct', expect.any(Object));
+        expect(mockChannel.assertQueue).toHaveBeenCalledWith('testq', expect.any(Object));
+        expect(mockChannel.bindQueue).toHaveBeenCalledWith('testq', 'testq', 'testq');
         expect(mockChannel.consume).toHaveBeenCalledWith('testq', expect.any(Function));
         // Simulate a message
         const msg = { content: Buffer.from(JSON.stringify({ hello: 'world' })) };
@@ -51,7 +55,7 @@ describe('rabbitmq.mjs', () => {
 
     it('consume handles invalid JSON gracefully', async () => {
         const onMessage = jest.fn();
-        await rabbitmq.consume('testq', onMessage, {}, { amqplibLib: mockAmqplib, logger: mockLogger });
+        await rabbitmq.consume('testq', 'direct', onMessage, {}, { amqplibLib: mockAmqplib, logger: mockLogger });
         const msg = { content: Buffer.from('notjson') };
         await mockChannel._consumeCb(msg);
         expect(onMessage).toHaveBeenCalledWith('notjson');
